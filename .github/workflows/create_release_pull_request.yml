@@ -8,7 +8,7 @@ on:
 
 jobs:
   create-relsease-pr:
-    runs-on: ubuntu-laest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set Release version env variable

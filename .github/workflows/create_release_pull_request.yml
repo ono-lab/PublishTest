@@ -26,4 +26,4 @@ jobs:
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release
           RELEASE_VERSION: v${{ steps.set-version.outputs.RELEASE_VERSION }}
-          GIT_PR_RELEASE_TEMPLATE: .git-pr-release-template
+          GIT_PR_RELEASE_TEMPLATE: .github/.git-pr-release-template

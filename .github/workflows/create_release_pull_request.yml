@@ -2,18 +2,22 @@ name: create release pull request
 
 on:
   pull_request:
-  types: [closed]
-  branches:
-    - main
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   create-relsease-pr:
-    runs-on: ubuntu-laest
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Get Version
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      # get version step
       - name: Set Release version env variable
-        run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        id: set-version
+        run: echo "::set-output name=RELEASE_VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+      # create release PR step
       - name: Create Release Pull Request
         uses: bakunyo/git-pr-release-action@master
         env:
@@ -21,5 +25,5 @@ jobs:
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release
-          RELEASE_VERSION: v${{ env.RELEASE_VERSION }}
-          GIT_PR_RELEASE_TEMPLATE: .git-pr-release-template
+          RELEASE_VERSION: v${{ steps.set-version.outputs.RELEASE_VERSION }}
+          GIT_PR_RELEASE_TEMPLATE: .github/.git-pr-release-template

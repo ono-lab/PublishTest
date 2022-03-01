@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  create-release-branch:
+  create-release-pr:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -26,14 +26,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: release/${{ steps.set-version.outputs.RELEASE_VERSION }}
-  # create-release-pr:
-  #   needs: create-release-branch
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-      # create release PR step
       - name: Create Release Pull Request
         uses: bakunyo/git-pr-release-action@master
         env:

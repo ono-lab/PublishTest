@@ -1,4 +1,4 @@
-name: create release pull request
+name: create release branch
 
 on:
   pull_request:

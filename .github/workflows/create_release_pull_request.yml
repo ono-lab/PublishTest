@@ -11,8 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # get version step
       - name: Set Release version env variable
         run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      # create release PR step
       - name: Create Release Pull Request
         uses: bakunyo/git-pr-release-action@master
         env:

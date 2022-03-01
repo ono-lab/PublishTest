@@ -5,7 +5,7 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - release/**
+      - release
 
 jobs:
   publish:
@@ -49,3 +49,23 @@ jobs:
       #     channel: "#sip2"
       #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
       #     created_tag: "${{ github.event.pull_request.title }}"
+      - name: Send GitHub Action trigger data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.16.0
+        with:
+          payload: |
+            {
+              "text": ":github: Released version ${{ steps.set-version.outputs.RELEASE_VERSION }}\n\nhttps://github.com/${{ github.repository }}/releases/tag/v${{ steps.set-version.outputs.RELEASE_VERSION }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":tada: Released version ${{ steps.set-version.outputs.RELEASE_VERSION }}\n\nhttps://github.com/${{ github.repository }}/releases/tag/v${{ steps.set-version.outputs.RELEASE_VERSION }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_INCOMING_WEBHOOK_URL }}

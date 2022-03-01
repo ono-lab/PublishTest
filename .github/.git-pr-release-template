@@ -1,4 +1,4 @@
-<%= ENV['RELEASE_VERSION'] %>
+Bump version to <%= ENV['RELEASE_VERSION'] %>
 <% pull_requests.each do |pr| -%>
 <%= pr.to_checklist_item %>
 <% end -%>

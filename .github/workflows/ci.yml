@@ -9,11 +9,9 @@ on:
 
 jobs:
   publish:
+    if: github.event.pull_request.merged == true
     # environment
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       # checkout step
@@ -24,17 +22,18 @@ jobs:
         with:
           java-version: "11"
           distribution: "adopt"
-      # build step
-      # - name: Build with Maven
-      # run: mvn --batch-mode --update-snapshots verify
+      # get version step
+      - name: Set Release version env variable
+        id: set-version
+        run: echo "::set-output name=RELEASE_VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       # create release step
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.pull_request.title }}
-          release_name: ${{ github.event.pull_request.title }}
+          tag_name: v${{ steps.set-version.outputs.RELEASE_VERSION }}
+          release_name: version ${{ steps.set-version.outputs.RELEASE_VERSION }}
           body: ${{ github.event.pull_request.body }}
           draft: false
           prerelease: false
@@ -44,9 +43,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Slack Notification
-      - name: Slack Notification
-        uses: weseek/ghaction-release-slack-notification@master
+      # - name: Slack Notification
+      #   uses: weseek/ghaction-release-slack-notification@master
+      #   with:
+      #     channel: "#sip2"
+      #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     created_tag: "${{ github.event.pull_request.title }}"
+      - name: Send GitHub Action trigger data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.16.0
         with:
-          channel: "#sip2"
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          created_tag: "${{ github.event.pull_request.title }}"
+          payload: |
+            {
+              "text": ":github: Released version ${{ steps.set-version.outputs.RELEASE_VERSION }}\n\nhttps://github.com/${{ github.repository }}/releases/tag/v${{ steps.set-version.outputs.RELEASE_VERSION }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":tada: Released version ${{ steps.set-version.outputs.RELEASE_VERSION }}\n\nhttps://github.com/${{ github.repository }}/releases/tag/v${{ steps.set-version.outputs.RELEASE_VERSION }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_INCOMING_WEBHOOK_URL }}

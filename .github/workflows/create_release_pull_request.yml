@@ -23,7 +23,7 @@ jobs:
       # create release PR step
       - name: Create Release Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release

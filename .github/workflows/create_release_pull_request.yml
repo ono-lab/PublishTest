@@ -13,13 +13,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.7.x
       # get version step
       - name: Set Release version env variable
-        run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        id: set-version
+        run: echo "::set-output name=RELEASE_VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       # create release PR step
       - name: Create Release Pull Request
         uses: bakunyo/git-pr-release-action@master
@@ -28,5 +25,5 @@ jobs:
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release
-          RELEASE_VERSION: v${{ env.RELEASE_VERSION }}
+          RELEASE_VERSION: v${{ steps.set-version.outputs.RELEASE_VERSION }}
           GIT_PR_RELEASE_TEMPLATE: .git-pr-release-template

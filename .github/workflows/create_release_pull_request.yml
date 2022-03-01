@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  create-relsease-branch:
+  create-release-branch:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -23,7 +23,7 @@ jobs:
           BRANCH_NAME="release/$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
           git checkout -b "$BRANCH_NAME"
           git push origin "$BRANCH_NAME"
-  create-relsease-pr:
+  create-release-pr:
     needs: create-release-branch
     runs-on: ubuntu-latest
     steps:

@@ -31,7 +31,7 @@
 vx.y.z  
 x: メジャーバージョン  
 y: 機能追加（enhancementタグに相当，ドキュメンテーション含む）  
-z: バグ修正（bugタグに相当)
+z: バグ修正（bugタグに相当）
 
 ## 参考
 - [自動化手順](https://zenn.dev/itizawa/articles/b832c4e2a33661)

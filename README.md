@@ -23,3 +23,13 @@
 
 現在mavenで行っている．設定ファイルの可読性やKotlinにも対応していることを考慮すると，将来的にはGradleに移行するのが良い．
 - [GradleでのGitHub Packageのpublishの方法(GitHub公式から)](https://docs.github.com/en/actions/publishing-packages/publishing-java-packages-with-gradle#publishing-packages-to-github-packages)
+- [Personal Access TokenのGradleにおける保管場所](https://medium.com/swlh/devops-with-github-part-1-github-packages-with-gradle-c4253cdf7ca6)
+
+## バージョニングについて
+
+vx.y.z  
+x: メジャーバージョン．後方互換のない変更の場合に上げる．
+y: マイナーバージョン．後方互換のある機能追加（enhancementタグに相当，ドキュメンテーション含む）の場合に上げる． 
+z: パッチバージョン．後方互換のあるバグ修正（bugタグに相当）の場合に上げる．
+
+- より詳しいバージョニングについては[こちら](https://semver.org/lang/ja/)

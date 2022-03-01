@@ -1,28 +1,30 @@
 name: create release pull request
 
 on:
-  workflow_run:
-    workflows: ["create release branch"]
-    types:
-      - completed
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
-  create-release-pr:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  create-release-branch:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: main
       # get version step
       - name: Set Release version env variable
         id: set-version
         run: echo "::set-output name=RELEASE_VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+      # create release pull request step
       - name: Create Release Pull Request
         uses: bakunyo/git-pr-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_PR_RELEASE_BRANCH_PRODUCTION: release/${{ steps.set-version.outputs.RELEASE_VERSION }}
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: release
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release
           RELEASE_VERSION: v${{ steps.set-version.outputs.RELEASE_VERSION }}

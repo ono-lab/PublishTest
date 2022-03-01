@@ -2,16 +2,15 @@ name: create release pull request
 
 on:
   pull_request:
-  types: [closed]
-  branches:
-    - main
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   create-relsease-pr:
     runs-on: ubuntu-laest
     steps:
       - uses: actions/checkout@v2
-      - name: Get Version
       - name: Set Release version env variable
         run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Create Release Pull Request

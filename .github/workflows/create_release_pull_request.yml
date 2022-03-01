@@ -22,13 +22,11 @@ jobs:
         run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       # create release PR step
       - name: Create Release Pull Request
+        uses: bakunyo/git-pr-release-action@master
         env:
-          GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release
           RELEASE_VERSION: v${{ env.RELEASE_VERSION }}
           GIT_PR_RELEASE_TEMPLATE: .git-pr-release-template
-        run: |
-          gem install -N git-pr-release
-          git-pr-release
